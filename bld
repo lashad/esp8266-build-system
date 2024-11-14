@@ -34,7 +34,7 @@ all() {
         
         # Output the result
         echo "Uploading project..."
-        esptool.py $result
+        $ESPTOOL $result
     else
         # If docker run failed, print the error message
         echo "Docker run failed. Here is the error:"
