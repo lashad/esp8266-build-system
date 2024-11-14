@@ -29,7 +29,7 @@ First, obtain the repository and build the Docker image and clone
 the `ESP8266_RTOS_SDK` from GitHub to get the examples for a quick start
 
 ```
-./bld image
+./bld setup
 ```
 
 Next, Copy the `hello_world` example from the SDK to your current folder:
@@ -94,6 +94,26 @@ Changing baud rate to 460800
 ......
 ```
 
+To build the hello_world project without uploading it to the device, run:
+
+```
+./bld build
+```
+
+### ESP8266 Build Script v0.1
+This tool helps you set up and manage ESP8266 projects in a Docker container.
+
+**Usage**:
+
+```
+./bld <option>
+```
+
+**Optionss**:
+- setup: Builds the Docker image and clones the SDK repository in the current folder.
+- all: Builds the project and uploads it to the device.
+- build: Only builds the project, without uploading.
+- shell: Opens an interactive shell inside the container.
 
 
 
