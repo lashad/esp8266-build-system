@@ -11,8 +11,8 @@ help() {
     echo "ESP8266 Build script v0.1"
     echo "Usage: $0 <options>"
     echo "  options:"
-    echo "     all                  Build and upload to device"
-    echo "     build                Just build project"
+    echo "     all     Build the project and upload it to the device."
+    echo "     build   Only build the project."
     echo 
     echo "Example 1: $0 all"
     echo "Example 2: $0 buil"
