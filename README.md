@@ -25,18 +25,14 @@ The host computer must have Docker installed, along with `esptool.py` for flashi
 
 ### Usage
 
-First, obtain the repository and build the Docker image:
+First, obtain the repository and build the Docker image and clone
+the `ESP8266_RTOS_SDK` from GitHub to get the examples for a quick start
 
 ```
-docker build -t my-esp8266-build .
-```
-Next, clone the `ESP8266_RTOS_SDK` from GitHub to get the examples for a quick start:
-
-```
-git clone --recursive https://github.com/espressif/ESP8266_RTOS_SDK.git
+./bld image
 ```
 
-Copy the `hello_world` example from the SDK to your current folder:
+Next, Copy the `hello_world` example from the SDK to your current folder:
 
 ```
 cp -r ./ESP8266_RTOS_SDK/examples/get-started/hello_world .
@@ -52,7 +48,7 @@ Run `menuconfig` inside the container in interactive mode:
 
 ```
 cd hello_world
-docker run -it --rm -v "$PWD":/root/esp/build -w /root/esp/build my-esp8266-build /bin/bash
+./bld shell
 ```
 
 Once inside the container, run:

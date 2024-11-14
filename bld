@@ -11,11 +11,25 @@ help() {
     echo "ESP8266 Build script v0.1"
     echo "Usage: $0 <options>"
     echo "  options:"
+    echo "     setup   Build the Docker image and clone the SDK repository in the current folder."
     echo "     all     Build the project and upload it to the device."
-    echo "     build   Only build the project."
+    echo "     build   Build the project only."
+    echo "     shell   Open an interactive shell inside the container."
     echo 
-    echo "Example 1: $0 all"
-    echo "Example 2: $0 buil"
+    echo "Example 1: $0 setup"
+    echo "Example 2: $0 all"
+    echo "Example 3: $0 buil"
+    echo "Example 4: $0 shell"
+}
+
+# ----------------------------------------------------------
+
+setup() {
+    $DOCKER build -t my-esp8266-build .
+    # Check if the docker run command was successful
+    if [ $? -eq 0 ]; then
+        git clone --recursive https://github.com/espressif/ESP8266_RTOS_SDK.git
+    fi
 }
 
 # ----------------------------------------------------------
@@ -53,6 +67,12 @@ build() {
 
 # ----------------------------------------------------------
 
+shell() {
+    $DOCKER run -it --rm -v "$PWD":/root/esp/build -w /root/esp/build my-esp8266-build /bin/bash
+}
+
+# ----------------------------------------------------------
+
 main () {
 
     POSITIONAL=()
@@ -60,6 +80,12 @@ main () {
         key="$1"
 
         case $key in
+        setup)
+            ACTION=setup
+            ACTION_PARAM="$2"
+            shift
+            shift
+            ;;
         all)
             ACTION=all
             ACTION_PARAM="$2"
@@ -68,6 +94,12 @@ main () {
             ;;
         build)
             ACTION=build
+            ACTION_PARAM="$2"
+            shift
+            shift
+            ;;
+        shell)
+            ACTION=shell
             ACTION_PARAM="$2"
             shift
             shift
@@ -112,14 +144,24 @@ main () {
         exit 1
     else
 
-        # clone action
+        # setup action
+        if [ "$ACTION" == "setup" ]; then
+            setup;
+        fi
+
+        # all action
         if [ "$ACTION" == "all" ]; then
             all;
         fi
 
-        # list action
+        # build action
         if [ "$ACTION" == "build" ]; then
             build;
+        fi
+
+        # shell action
+        if [ "$ACTION" == "shell" ]; then
+            shell;
         fi
 
         exit 0
