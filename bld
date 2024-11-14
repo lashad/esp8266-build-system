@@ -1,0 +1,133 @@
+#!/bin/bash
+
+# CLI's
+DOCKER=docker
+ESPTOOL=esptool.py
+
+# ----------------------------------------------------------
+
+# Help screen
+help() {
+    echo "ESP8266 Build script v0.1"
+    echo "Usage: $0 <options>"
+    echo "  options:"
+    echo "     all                  Build and upload to device"
+    echo "     build                Just build project"
+    echo 
+    echo "Example 1: $0 all"
+    echo "Example 2: $0 buil"
+}
+
+# ----------------------------------------------------------
+
+all() {
+    
+    # Run the docker command, print output to terminal, and capture both stdout and stderr
+    echo "Building project..."
+    output=$($DOCKER run --rm -v "$PWD":/root/esp/build -w /root/esp/build my-esp8266-build make all 2>&1)
+
+    # Check if the docker run command was successful
+    if [ $? -eq 0 ]; then
+
+        # If successful, parse and extract the flashing command
+        result=$(echo "$output" | sed -n 's|^.*python /root/esp/ESP8266_RTOS_SDK/components/esptool_py/esptool/esptool.py ||p' | sed 's|/root/esp/build|.|g')
+        
+        # Output the result
+        echo "Uploading project..."
+        esptool.py $result
+    else
+        # If docker run failed, print the error message
+        echo "Docker run failed. Here is the error:"
+        echo "$output"
+        exit 1  # Exit with a non-zero status to indicate failure
+    fi
+}
+
+# ----------------------------------------------------------
+
+build() {
+# Run the docker command, print output to terminal, and capture both stdout and stderr
+    echo "Building project..."
+    $DOCKER run --rm -v "$PWD":/root/esp/build -w /root/esp/build my-esp8266-build make all
+}
+
+# ----------------------------------------------------------
+
+main () {
+
+    POSITIONAL=()
+    while [[ $# -gt 0 ]]; do
+        key="$1"
+
+        case $key in
+        all)
+            ACTION=all
+            ACTION_PARAM="$2"
+            shift
+            shift
+            ;;
+        build)
+            ACTION=build
+            ACTION_PARAM="$2"
+            shift
+            shift
+            ;;
+        *)
+            POSITIONAL+=("$1")
+            shift
+            ;;
+        esac
+    done
+
+    set -- "${POSITIONAL[@]}" # restore positional parameters
+
+    # Here is positional parameters tail. Basically the last command line argument(s).
+    TAIL=$1
+
+    # Check dependency. If 'docker' is here.
+    # Normally docker should be here but who knows :)
+    if ! hash $DOCKER &>/dev/null; then
+        echo "Docker is not installed on Host computer !, Please make sure 'docker' CLI is accessible from shell"
+        exit 1
+    fi
+
+    # Check dependency. If 'esptool.py' is here.
+    # Normally esptool.py should be here but who knows :)
+    if ! hash $ESPTOOL &>/dev/null; then
+        echo "esptool.py is not installed on Host computer. esptool.py is a command line interface that works with device (flash,erasy, etc)."
+        exit 1
+    fi
+
+    # Check dependency. If 'git' is here.
+    # Normally git should be here but who knows :)
+    if ! hash $GIT &>/dev/null; then
+        echo "Git is not installed on Host computer. That's weird"
+        exit 1
+    fi
+
+    # Check action parameter
+    if [ "$ACTION" == "" ]; then
+        help
+        echo "Action must be specified in command line argument !"
+        exit 1
+    else
+
+        # clone action
+        if [ "$ACTION" == "all" ]; then
+            all;
+        fi
+
+        # list action
+        if [ "$ACTION" == "build" ]; then
+            build;
+        fi
+
+        exit 0
+    fi
+
+    help;
+}
+
+main "$@"
+
+

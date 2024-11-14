@@ -42,10 +42,10 @@ Copy the `hello_world` example from the SDK to your current folder:
 cp -r ./ESP8266_RTOS_SDK/examples/get-started/hello_world .
 ```
 
-Copy the `build.sh` script into the `hello_world` folder:
+Copy the `bld` script into the `hello_world` folder:
 
 ```
-cp build.sh hello_world
+cp bld hello_world
 ```
 
 Run `menuconfig` inside the container in interactive mode:
@@ -74,7 +74,7 @@ exit
 Once you are outside the container in the `hello_world` project directory, run:
 
 ```
-./build.sh
+./bld all
 ```
 
 > **Note**: This script essentially executes the following command:
