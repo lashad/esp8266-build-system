@@ -94,7 +94,7 @@ Changing baud rate to 460800
 ......
 ```
 
-To build the hello_world project without uploading it to the device, run:
+To build the `hello_world` project without uploading it to the device, run:
 
 ```
 ./bld build
@@ -110,10 +110,10 @@ This tool helps you set up and manage ESP8266 projects in a Docker container.
 ```
 
 **Optionss**:
-- setup: Builds the Docker image and clones the SDK repository in the current folder.
-- all: Builds the project and uploads it to the device.
-- build: Only builds the project, without uploading.
-- shell: Opens an interactive shell inside the container.
+- **setup**: Builds the Docker image and clones the SDK repository in the current folder.
+- **all**: Builds the project and uploads it to the device.
+- **build**: Only builds the project, without uploading.
+- **shell**: Opens an interactive shell inside the container.
 
 
 
